@@ -13,7 +13,21 @@ export function createGameServer(config=process.env) {
   sqlite.exec('PRAGMA journal_mode=WAL');
   const version=sqlite.prepare('PRAGMA user_version').get().user_version;
   if(version===0){sqlite.exec('BEGIN');try{sqlite.exec(readFileSync(resolve(root,'drizzle/0000_foamy_red_ghost.sql'),'utf8'));sqlite.exec('PRAGMA user_version=1');sqlite.exec('COMMIT');}catch(error){sqlite.exec('ROLLBACK');sqlite.close();throw error;}}
-  const DB={prepare(sql){return {bind(...args){return {async all(){return {results:sqlite.prepare(sql).all(...args)}},async run(){const result=sqlite.prepare(sql).run(...args);return {meta:{changes:Number(result.changes)}}}}}}};
+  const DB = {
+    prepare(sql) {
+      return {
+        bind(...args) {
+          return {
+            async all() { return { results: sqlite.prepare(sql).all(...args) }; },
+            async run() {
+              const result = sqlite.prepare(sql).run(...args);
+              return { meta: { changes: Number(result.changes) } };
+            },
+          };
+        },
+      };
+    },
+  };
   const env={DB,OPENAI_API_KEY:config.OPENAI_API_KEY,OPENAI_MODEL:config.OPENAI_MODEL,GAME_SESSION_SECRET:config.GAME_SESSION_SECRET};
   const files=new Map([['/',['index.html','text/html; charset=utf-8']],['/app.js',['public/app.js','application/javascript']],['/game.js',['public/game.js','application/javascript']],['/styles.css',['public/styles.css','text/css']],['/favicon.svg',['public/favicon.svg','image/svg+xml']]]);
   const server=createServer(async(req,res)=>{
