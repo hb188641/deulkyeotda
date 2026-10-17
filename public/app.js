@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s),screen=$('#screen'),P=Game.ROUND_COUNT,W=Game.WARMUP_COUNT;
-let Q,learningConsent=false;try{learningConsent=localStorage.getItem('deulkyeotda-learning')==='yes'}catch{}
+let Q,learningConsent=true;try{learningConsent=localStorage.getItem('deulkyeotda-learning')!=='no'}catch{}
 let state,version=0,timer,toastTimer,imageURL,selectedMode='ai',hostedAI;
 const challenge=(()=>{const params=new URL(location.href).searchParams,total=Number(params.get('total')||4),hits=Number(params.get('challenge'));if(!params.has('challenge')||![4,14,P].includes(total)||!Number.isInteger(hits)||hits<0||hits>total)return null;const ids=(params.get('questions')||'').split('.');return {hits,total,questionIds:total===P&&Game.validQuestionIds(ids)?ids:undefined,warmupIds:total===P&&Game.validQuestionIds((params.get('warmups')||'').split('.'),W)?params.get('warmups').split('.'):undefined};})();
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
