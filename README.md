@@ -16,7 +16,7 @@ npm start
 
 브라우저에서 <http://127.0.0.1:5087>을 엽니다. 키가 없으면 **규칙 기반 데모**로 동작합니다.
 
-실제 AI를 사용하려면 `.env.example`을 `.env`로 복사하고, 본인의 `OPENAI_API_KEY`를 직접 입력합니다. 키는 서버에서만 사용하며 브라우저에 전달하지 않습니다. `GAME_SESSION_SECRET`에는 별도의 임의 비밀값을 넣을 수 있습니다. 기본 모델은 `gpt-4.1-mini`이며 `OPENAI_MODEL`로 변경합니다. 실제 AI 플레이는 본인 API 사용량에 청구됩니다.
+실제 AI를 사용하려면 `.env.example`을 `.env`로 복사하고, 본인의 `OPENAI_API_KEY`를 직접 입력합니다. 키는 서버에서만 사용하며 브라우저에 전달하지 않습니다. `GAME_SESSION_SECRET`에는 별도의 임의 비밀값을 넣을 수 있습니다. 기본 모델은 `gpt-6-luna`(추론 강도 `low`)이며 `OPENAI_MODEL`과 `OPENAI_REASONING_EFFORT`로 변경합니다. 추론을 지원하지 않는 모델은 `OPENAI_REASONING_EFFORT=off`로 설정합니다. 실제 AI 플레이는 본인 API 사용량에 청구됩니다.
 
 ```sh
 cp .env.example .env
@@ -25,6 +25,18 @@ npm start
 ```
 
 `PORT`와 `HOST`로 실행 주소를 지정합니다. 저장소는 기본 `data/game.sqlite`이며 `DATABASE_PATH`로 변경할 수 있습니다. 서버 재시작 후에도 유지되므로 운영 시 이 파일을 백업하세요. 외부 공개 운영에는 HTTPS 프록시와 API 요청 제한을 별도로 구성하세요.
+
+## Cloudflare 배포
+
+`worker/index.mjs`가 같은 API를 Cloudflare Workers에서 제공하고, 화면 파일은 정적 자산으로, 익명 기록은 D1에 저장합니다. 설정은 `wrangler.jsonc`에 있습니다.
+
+```sh
+wrangler d1 create deulkyeotda          # 최초 1회, 출력된 database_id를 wrangler.jsonc에 반영
+wrangler d1 migrations apply deulkyeotda --remote
+wrangler secret put GAME_SESSION_SECRET  # 임의 비밀값
+wrangler secret put OPENAI_API_KEY       # 선택, 없으면 규칙 기반 데모
+wrangler deploy
+```
 
 ## 게임 흐름
 
