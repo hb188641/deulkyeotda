@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deulkyeotda",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-10-24",
+  "workers_dev": true,
+  "routes": [{ "pattern": "deulkyutda.sourity.com", "custom_domain": true }],
+  "build": { "command": "node scripts/build-assets.mjs" },
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "deulkyeotda",
+      "database_id": "c223c313-7b43-4be4-aa70-700f789e16e6",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "vars": { "OPENAI_MODEL": "gpt-6-luna", "OPENAI_REASONING_EFFORT": "low" },
+  "observability": { "enabled": true }
+}

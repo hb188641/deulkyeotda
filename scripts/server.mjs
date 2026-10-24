@@ -28,7 +28,7 @@ export function createGameServer(config=process.env) {
       };
     },
   };
-  const env={DB,OPENAI_API_KEY:config.OPENAI_API_KEY,OPENAI_MODEL:config.OPENAI_MODEL,GAME_SESSION_SECRET:config.GAME_SESSION_SECRET};
+  const env={DB,OPENAI_API_KEY:config.OPENAI_API_KEY,OPENAI_MODEL:config.OPENAI_MODEL,OPENAI_REASONING_EFFORT:config.OPENAI_REASONING_EFFORT,GAME_SESSION_SECRET:config.GAME_SESSION_SECRET};
   const files=new Map([['/',['index.html','text/html; charset=utf-8']],['/app.js',['public/app.js','application/javascript']],['/game.js',['public/game.js','application/javascript']],['/styles.css',['public/styles.css','text/css']],['/favicon.svg',['public/favicon.svg','image/svg+xml']]]);
   const server=createServer(async(req,res)=>{
     try {
