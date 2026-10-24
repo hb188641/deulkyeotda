@@ -38,6 +38,8 @@ wrangler secret put OPENAI_API_KEY       # 선택, 없으면 규칙 기반 데�
 wrangler deploy
 ```
 
+남용 방지를 위해 Worker는 IP별로 `/api/predict`를 분당 10회, 나머지 API를 분당 60회로 제한합니다. 이 제한은 Cloudflare 위치별 근사치이며, IP는 카운터 키로만 쓰고 저장하지 않습니다. 모든 플레이어를 합친 하루(UTC) OpenAI 호출 수는 `AI_DAILY_LIMIT`(기본 1000)으로 제한하고 D1의 `ai_usage` 테이블에 날짜별 횟수만 기록합니다. 한도에 닿으면 AI 요청은 429로 거절되고 데모로 플레이할 수 있습니다. `npm start`로 실행하는 Node.js 서버에는 이 제한이 없습니다.
+
 ## 게임 흐름
 
 - 미리 만든 질문 40개에서 준비 6개 + 예측 10개를 중복 없이 무작위 선정합니다.
